@@ -29,34 +29,46 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-package com.qualcomm.ftcrobotcontroller.opmodes;
+package org.ftcteam.opmodes.examples;
 
-import com.qualcomm.ftcrobotcontroller.R;
-import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
-import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.ftcteam.internal.FtcSimpleBootstrap;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
- * Register Op Modes
+ * TeleOpMode Mode
+ * <p>
+ *Enables control of the robot via the gamepad
  */
-public class FtcOpModeRegister implements OpModeRegister {
+public class NullOp extends OpMode {
 
-  /**
-   * The Op Mode Manager will call this method when it wants a list of all
-   * available op modes. Add your op mode to the list to enable it.
-   *
-   * @param manager op mode manager
-   */
-  public void register(OpModeManager manager) {
+  private String startDate;
+  private ElapsedTime runtime = new ElapsedTime();
 
-    /*
-     * register your op modes here.
-     * The first parameter is the name of the op mode
-     * The second parameter is the op mode class property
-     *
-     * If two or more op modes are registered with the same name, the app will display an error.
+  @Override
+  public void init() {
+  }
+
+  /*
+     * Code to run when the op mode is first enabled goes here
+     * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#start()
      */
-    FtcSimpleBootstrap.configure(manager, R.id.RelativeLayout);
+  @Override
+  public void init_loop() {
+    startDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+    runtime.reset();
+    telemetry.addData("Null Op Init Loop", runtime.toString());
+  }
+
+  /*
+   * This method will be called repeatedly in a loop
+   * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
+   */
+  @Override
+  public void loop() {
+    telemetry.addData("1 Start", "NullOp started at " + startDate);
+    telemetry.addData("2 Status", "running for " + runtime.toString());
   }
 }

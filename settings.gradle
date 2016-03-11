@@ -1,2 +1,3 @@
+include ':OpModeLibrary'
 // FTC Apps
-include (':FtcRobotController')
+include ':FtcRobotController'
