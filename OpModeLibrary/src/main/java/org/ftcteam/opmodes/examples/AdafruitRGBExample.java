@@ -157,7 +157,6 @@ public class AdafruitRGBExample extends LinearOpMode {
 
       // convert the RGB values to HSV values.
       Color.RGBToHSV((sensorRGB.red() * 255) / 800, (sensorRGB.green() * 255) / 800, (sensorRGB.blue() * 255) / 800, hsvValues);
-
       // send the info back to driver station using telemetry function.
       telemetry.addData("Clear", sensorRGB.alpha());
       telemetry.addData("Red  ", sensorRGB.red());

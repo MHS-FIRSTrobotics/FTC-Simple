@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeMap;
 
 import dalvik.system.DexFile;
@@ -50,7 +51,7 @@ import dalvik.system.DexFile;
 public class AnnotationFtcRegister {
     private static final String TAG = "FTC_OP_MODE_REGISTER::";
 
-    private final LinkedList<String> noCheckList;
+    private final List<String> noCheckList;
 
     private AnnotationFtcRegister() {
         noCheckList = new LinkedList<>();
@@ -62,11 +63,12 @@ public class AnnotationFtcRegister {
      * @param register the Ftc OpMode Register
      */
     static void loadOpModes(OpModeManager register) {
+        Thread.currentThread().setPriority(9);
         AnnotationFtcRegister me = new AnnotationFtcRegister();
         me.buildNoCheckList();
 
-        LinkedList<Class> classes = me.buildClassList();
-        Class[] classArray = classes.toArray(new Class[classes.size()]);
+        List<Class> classes = me.buildClassList();
+        //Class[] classArray = classes.toArray(new Class[classes.size()]);
         HashMap<String, LinkedList<Class<OpMode>>> opModes = me.findOpModes(classes);
         me.sortOpModeMap(opModes);
 
@@ -163,13 +165,15 @@ public class AnnotationFtcRegister {
      *
      * @return a list of classes present and that can be used
      */
-    private LinkedList<Class> buildClassList() {
-        DexFile df;
+    private List<Class> buildClassList() {
         Context applicationContext = getApplicationContext();
 
         // Try to load the Dex-File
+        DexFile df;
         try {
-            df = new DexFile(applicationContext.getPackageCodePath());
+            String packageCodePath = applicationContext.getPackageCodePath();
+            Log.i(TAG, "DEX File: " + packageCodePath);
+            df = new DexFile(packageCodePath);
         } catch (IOException e) {
             Log.wtf(TAG, e);
             throw new NullPointerException();
@@ -177,7 +181,7 @@ public class AnnotationFtcRegister {
 
 
         // Migrate the enum to OpMode LinkedList
-        LinkedList<String> classes = new LinkedList<>(Collections.list(df.entries()));
+        List<String> classes = Collections.list(df.entries());
 
         // Create the container for the objects to add
         LinkedList<Class> classesToProcess = new LinkedList<>();
@@ -221,7 +225,7 @@ public class AnnotationFtcRegister {
      * @param klazzes a LinkedList to check for possible OpMode candidates
      * @return a HashMap containing OpMode groupings
      */
-    private HashMap<String, LinkedList<Class<OpMode>>> findOpModes(LinkedList<Class> klazzes) {
+    private HashMap<String, LinkedList<Class<OpMode>>> findOpModes(List<Class> klazzes) {
         Class<TeleOpMode> teleOpClass = TeleOpMode.class;
         Class<AutonomousMode> autoClass = AutonomousMode.class;
         Class<Disabled> disabledClass = Disabled.class;
